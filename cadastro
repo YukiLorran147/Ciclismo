@@ -153,7 +153,7 @@
 </head>
 <body>
   <div class="box">
-    <form action="" method="POST" id="formCadastro">
+    <form action="processar_cadastro.php" method="POST" id="formCadastro">
       <fieldset>
         <legend>Fórmulário de Clientes</legend>
 
