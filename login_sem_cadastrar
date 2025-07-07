@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tela de login</title>
+  <style>
+    /* Seu CSS existente */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Login</h1>
+    <div class="form-group">
+      <input type="text" placeholder="Nome" />
+      <input type="password" placeholder="Senha" />
+    </div>
+    <div class="button-group">
+      <button type="button">Conecte-se</button>
+      <button id="btnCadastrar" type="button" onclick="window.location.href='cadastro.html'">Cadastrar</button>
+    </div>
+  </div>
+
+  <script>
+    // Verifica se na URL tem ?cadastro=sucesso
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('cadastro') === 'sucesso') {
+      // Remove o botão cadastrar
+      const btnCadastrar = document.getElementById('btnCadastrar');
+      if (btnCadastrar) {
+        btnCadastrar.style.display = 'none';
+      }
+    }
+  </script>
+</body>
+</html>
