@@ -1,32 +1,40 @@
 <?php
-// processar_cadastro.php
+require_once "config.php";
 
-// Recebe os dados via POST
-$nome = $_POST['nome'] ?? '';
-$cpf = $_POST['cpf'] ?? '';
-$telefone = $_POST['telefone'] ?? '';
-$genero = $_POST['genero'] ?? '';
-$data_nascimento = $_POST['data_nascimento'] ?? '';
-$tamanho_camisa = $_POST['tamanho_camisa'] ?? '';
+// Ativa relatório de erros MySQLi
+mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-// Validações básicas (pode aprimorar conforme necessidade)
-if (
-    !empty($nome) &&
-    preg_match('/^[a-zA-ZÀ-ÿ\s\'-]+$/u', $nome) &&
-    preg_match('/^\d{11}$/', $cpf) &&
-    preg_match('/^\d{11}$/', $telefone) &&
-    in_array($genero, ['feminino', 'masculino', 'outro']) &&
-    !empty($data_nascimento) &&
-    in_array($tamanho_camisa, ['pp', 'p', 'm', 'g', 'gg'])
-) {
-    // Aqui você pode salvar os dados no banco, se quiser
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $nome = trim($_POST["nome"]);
+    $cpf = trim($_POST["cpf"]);
+    $telefone = trim($_POST["telefone"]);
+    $genero = isset($_POST["genero"]) ? trim($_POST["genero"]) : null;
+    $data_nascimento = trim($_POST["data_nascimento"]);
+    $tamanho_camisa = trim($_POST["tamanho_camisa"]);
 
-    // Redireciona para a tela de login sem botão cadastrar
-    header('Location: login_sem_cadastrar.html');
-    exit();
-} else {
-    // Dados inválidos, redireciona para o formulário (pode enviar mensagem de erro)
-    header('Location: cadastro.html?erro=1');
-    exit();
+    $sql = "INSERT INTO usuarios
+        (nome, cpf, telefone, genero, data_nascimento, tamanho_camisa)
+        VALUES (?, ?, ?, ?, ?, ?)";
+
+    try {
+        $stmt = mysqli_prepare($conexao, $sql);
+        mysqli_stmt_bind_param(
+            $stmt,
+            "ssssss",
+            $nome,
+            $cpf,
+            $telefone,
+            $genero,
+            $data_nascimento,
+            $tamanho_camisa
+        );
+        mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+        mysqli_close($conexao);
+        header("Location: tela_de_login.html");
+        exit;
+    } catch (mysqli_sql_exception $e) {
+        echo "Erro ao inserir: " . $e->getMessage();
+        exit;
+    }
 }
-?>
