@@ -1,7 +1,6 @@
 <?php
 require_once "config.php";
 
-// Ativa relatório de erros MySQLi
 mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
@@ -9,11 +8,11 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $cpf = trim($_POST["cpf"]);
     $telefone = trim($_POST["telefone"]);
     $genero = isset($_POST["genero"]) ? trim($_POST["genero"]) : null;
-    $data_nascimento = trim($_POST["data_nascimento"]);
+    $divisao = trim($_POST["divisao"]);
     $tamanho_camisa = trim($_POST["tamanho_camisa"]);
 
     $sql = "INSERT INTO usuarios
-        (nome, cpf, telefone, genero, data_nascimento, tamanho_camisa)
+        (nome, cpf, telefone, genero, divisao, tamanho_camisa)
         VALUES (?, ?, ?, ?, ?, ?)";
 
     try {
@@ -25,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             $cpf,
             $telefone,
             $genero,
-            $data_nascimento,
+            $divisao,
             $tamanho_camisa
         );
         mysqli_stmt_execute($stmt);
