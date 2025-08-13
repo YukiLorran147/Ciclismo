@@ -24,11 +24,7 @@
       box-sizing: border-box;
       box-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
     }
-    fieldset {
-      border: 3px solid dodgerblue;
-      padding: 20px;
-      border-radius: 12px;
-    }
+    fieldset { border: 3px solid dodgerblue; padding: 20px; border-radius: 12px; }
     legend {
       border: 1px solid dodgerblue;
       padding: 10px 20px;
@@ -39,10 +35,7 @@
       font-size: 1.2em;
       margin-bottom: 20px;
     }
-    .inputBox {
-      position: relative;
-      margin-bottom: 30px;
-    }
+    .inputBox { position: relative; margin-bottom: 30px; }
     .inputUser {
       background: none;
       border: none;
@@ -70,54 +63,32 @@
       -webkit-appearance: none;
       -moz-appearance: none;
       cursor: pointer;
-      background-image: linear-gradient(45deg, transparent 50%, white 50%), linear-gradient(135deg, white 50%, transparent 50%);
-      background-position: calc(100% - 20px) calc(1em + 2px), calc(100% - 15px) calc(1em + 2px);
+      background-image: linear-gradient(45deg, transparent 50%, white 50%),
+                        linear-gradient(135deg, white 50%, transparent 50%);
+      background-position: calc(100% - 20px) calc(1em + 2px),
+                           calc(100% - 15px) calc(1em + 2px);
       background-size: 5px 5px;
       background-repeat: no-repeat;
     }
-    select option {
-      color: black;
-      background-color: #333;
-    }
+    select option { color: black; background-color: #333; }
     .labelInput {
       position: absolute;
-      top: 0px;
-      left: 0px;
+      top: 0;
+      left: 0;
       pointer-events: none;
       transition: 0.5s;
       color: white;
       font-size: 15px;
     }
     .inputUser:focus ~ .labelInput,
-    .inputUser:valid ~ .labelInput {
-      top: -20px;
-      font-size: 12px;
-      color: dodgerblue;
-    }
+    .inputUser:valid ~ .labelInput,
     select:focus ~ .labelInput,
     select:not([value=""]) ~ .labelInput {
       top: -20px;
       font-size: 12px;
       color: dodgerblue;
     }
-    .static-label {
-      display: block;
-      margin-bottom: 10px;
-      color: white;
-      font-size: 15px;
-    }
-    #data_nascimento {
-      border: none;
-      padding: 8px;
-      border-radius: 10px;
-      outline: none;
-      font-size: 15px;
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: 5px;
-      margin-bottom: 25px;
-      color: black;
-    }
+    .static-label { display: block; margin-bottom: 10px; color: white; font-size: 15px; }
     .radio-group {
       margin-top: 20px;
       margin-bottom: 20px;
@@ -163,17 +134,7 @@
         </div>
 
         <div class="inputBox">
-          <input
-            type="text"
-            name="cpf"
-            id="cpf"
-            class="inputUser"
-            inputmode="numeric"
-            maxlength="11"
-            pattern="\d{11}"
-            title="O CPF deve conter exatamente 11 números."
-            required
-          />
+          <input type="text" name="cpf" id="cpf" class="inputUser" inputmode="numeric" maxlength="11" required />
           <label for="cpf" class="labelInput">CPF</label>
         </div>
 
@@ -183,16 +144,21 @@
         </div>
 
         <div class="radio-group">
-    <p class="static-label">Sexo:</p>
-    <label><input type="radio" name="genero" value="feminino" required /> Feminino</label>
-    <label><input type="radio" name="genero" value="masculino" required /> Masculino</label>
-    <label><input type="radio" name="genero" value="outro" required /> Outro</label>
-  </div>
+          <p class="static-label">Sexo:</p>
+          <label><input type="radio" name="genero" value="feminino" required /> Feminino</label>
+          <label><input type="radio" name="genero" value="masculino" required /> Masculino</label>
+          <label><input type="radio" name="genero" value="outro" required /> Outro</label>
+        </div>
 
         <div class="inputBox">
-          <label for="data_nascimento" class="static-label">Data de Nascimento:</label>
-          <input type="date" name="data_nascimento" id="data_nascimento"
-       min="1920-01-01" max="2027-12-31" required />
+          <select name="divisao" id="divisao" class="inputUser" required>
+            <option value="" disabled selected>Selecione a divisão</option>
+            <option value="A">A: 18 a 25 anos</option>
+            <option value="B">B: 26 a 33 anos</option>
+            <option value="C">C: 34 anos ou mais</option>
+            <option value="D">D: Feminino 18 anos ou mais</option>
+          </select>
+          <label for="divisao" class="labelInput">Divisões</label>
         </div>
 
         <div class="inputBox">
@@ -213,28 +179,65 @@
   </div>
 
   <script>
+    function validaCPF(cpf) {
+      var Soma = 0, Resto;
+      var strCPF = String(cpf).replace(/[^\d]/g, '');
+      if (strCPF.length !== 11) return false;
+      if ([
+        '00000000000','11111111111','22222222222','33333333333',
+        '44444444444','55555555555','66666666666','77777777777',
+        '88888888888','99999999999'
+      ].includes(strCPF)) return false;
+
+      for (var i = 1; i <= 9; i++) {
+        Soma += parseInt(strCPF.substring(i - 1, i)) * (11 - i);
+      }
+      Resto = (Soma * 10) % 11;
+      if (Resto === 10 || Resto === 11) Resto = 0;
+      if (Resto !== parseInt(strCPF.substring(9, 10))) return false;
+
+      Soma = 0;
+      for (var i = 1; i <= 10; i++) {
+        Soma += parseInt(strCPF.substring(i - 1, i)) * (12 - i);
+      }
+      Resto = (Soma * 10) % 11;
+      if (Resto === 10 || Resto === 11) Resto = 0;
+      if (Resto !== parseInt(strCPF.substring(10, 11))) return false;
+
+      return true;
+    }
+
     const nomeInput = document.getElementById('nome');
+    const cpfInput = document.getElementById('cpf');
+    const telefoneInput = document.getElementById('telefone');
+    const form = document.getElementById('formCadastro');
+
     nomeInput.addEventListener('input', () => {
       nomeInput.value = nomeInput.value.replace(/[^a-zA-ZÀ-ÿ\s'-]/g, '');
     });
 
-    const cpfInput = document.getElementById('cpf');
     cpfInput.addEventListener('input', () => {
       cpfInput.value = cpfInput.value.replace(/\D/g, '').slice(0, 11);
     });
 
-    const telefoneInput = document.getElementById('telefone');
     telefoneInput.addEventListener('input', () => {
       telefoneInput.value = telefoneInput.value.replace(/\D/g, '').slice(0, 11);
     });
 
-    document.getElementById('formCadastro').addEventListener('submit', (e) => {
+    form.addEventListener('submit', (e) => {
+      const nome = nomeInput.value.trim();
       const cpf = cpfInput.value;
       const telefone = telefoneInput.value;
-      const nome = nomeInput.value.trim();
 
-      if (cpf.length !== 11) {
-        alert('O CPF deve conter exatamente 11 números.');
+      if (!nome) {
+        alert('Por favor, preencha o nome completo com letras válidas.');
+        nomeInput.focus();
+        e.preventDefault();
+        return;
+      }
+
+      if (!validaCPF(cpf)) {
+        alert('CPF inválido. Verifique o número digitado.');
         cpfInput.focus();
         e.preventDefault();
         return;
@@ -243,13 +246,6 @@
       if (telefone.length !== 11) {
         alert('O telefone deve conter exatamente 11 números (DDD + número).');
         telefoneInput.focus();
-        e.preventDefault();
-        return;
-      }
-
-      if (nome.length === 0) {
-        alert('Por favor, preencha o nome completo com letras válidas.');
-        nomeInput.focus();
         e.preventDefault();
         return;
       }
