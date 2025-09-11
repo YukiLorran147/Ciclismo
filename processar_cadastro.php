@@ -31,6 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         mysqli_stmt_close($stmt);
         mysqli_close($conexao);
         header("Location: tela_de_login.html");
+        header("Location: sucesso.php");
         exit;
     } catch (mysqli_sql_exception $e) {
         echo "Erro ao inserir: " . $e->getMessage();
